@@ -1,14 +1,34 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit';
+import { createContact } from 'components/redux/phoneBookSlice';
+
 import { Button, Form, FormInput, FormLabel } from './ContactForm.styled';
 
 const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.phoneBook.contacts);
+
   const handleSubmit = event => {
     event.preventDefault();
 
-    onSubmit({ name, number });
+    const newContact = { id: nanoid(), name, number };
+
+    const findContact = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (findContact) {
+      return toast.info(`${name} is already in contacts.`);
+    }
+
+    dispatch(createContact(newContact));
 
     setName('');
     setNumber('');

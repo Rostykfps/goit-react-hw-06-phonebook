@@ -1,23 +1,26 @@
-import PropTypes from 'prop-types';
 import { InputFilter, LabelFilter } from './Filter.styled';
 
-const Filter = ({ value, handleChange }) => {
+import { filterContacts } from 'components/redux/phoneBookSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+const Filter = () => {
+  const filter = useSelector(state => state.phoneBook.filter);
+
+  const dispatch = useDispatch();
+
+  const filteredContacts = ({ target: { value } }) =>
+    dispatch(filterContacts(value));
   return (
     <LabelFilter>
       Find contacts by name
       <InputFilter
         type="text"
         name="filter"
-        value={value}
-        onChange={handleChange}
+        value={filter}
+        onChange={filteredContacts}
       />
     </LabelFilter>
   );
-};
-
-Filter.propTypes = {
-  value: PropTypes.string,
-  handleChange: PropTypes.func,
 };
 
 export default Filter;
